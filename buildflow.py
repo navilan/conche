@@ -1,7 +1,9 @@
 from subprocess import Popen, PIPE
 import settings
+from Foundation import NSMutableDictionary
+
 from file_system import File, Folder
- 
+from time import sleep 
 class Builder(object):
     
     def get(self):
@@ -32,21 +34,36 @@ class Builder(object):
         if target.exists:
             target.delete()   
         app.move_to(release_root) 
+        return True  
+        
+    def get_version(self):
+        app_name = settings.APP_NAME + ".app"            
+        release_root = Folder(settings.RELEASE_ROOT)
+        info = release_root.child_folder(app_name).child('Contents/Info.plist')
+        plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info)
+        self.build_version = plist['CFBundleVersion']        
+        self.short_version_string = plist.get('CFBundleShortVersionString', self.build_version)
+        print self.short_version_string
+        print self.build_version        
         return True
-
+        
     def package(self):            
          app_name = settings.APP_NAME + ".app"                              
          release_root = Folder(settings.RELEASE_ROOT)
          app = release_root.child_folder(app_name)
-         zip_path = app.zzip()                                                                       
-         sign_cmd = 'openssl dgst -sha1 -binary < "' + zip_path + '" | openssl dgst -dss1 -sign "' + settings.SPARKLE_PRI_KEY + '" | openssl enc -base64'                                     
+         zip_path = app.zzip()                    
+         vzip = File(release_root.child(app_name + "-" + self.short_version_string + ".zip"))
+         if vzip.exists:
+             vzip.delete()         
+         vzip = str(vzip)    
+         File(zip_path).move_to(vzip) 
+         sign_cmd = 'openssl dgst -sha1 -binary < "' + vzip + '" | openssl dgst -dss1 -sign "' + settings.SPARKLE_PRI_KEY + '" | openssl enc -base64'                                     
          cmd = Popen(sign_cmd, stdout=PIPE, shell=True)
          key = cmd.communicate()[0]    
-         
          if not cmd.returncode == 0:
              return False           
              
-         cmd = Popen(settings.SUVerifier + ' "'  + zip_path + '" "' + key + '" "' + settings.SPARKLE_PUB_KEY + '"', shell=True)
+         cmd = Popen(settings.SUVerifier + ' "'  + vzip + '" "' + key + '" "' + settings.SPARKLE_PUB_KEY + '"', shell=True)
          cmd.communicate()    
          return cmd.returncode == 0
         
@@ -64,16 +81,9 @@ class Builder(object):
             if arg:
                 args += arg
                 args += " "
-        return args 
-        
-        
-                   
+        return args            
 
-                        
-# Package
-    
-    # 4. Zip the archive
-    # 5. Sign with sparkle   
+
     # 6. Generate appcast
     # 7. Check git tag with current. if different update the tag
     # 8. Update release notes in hyde folder    

@@ -270,48 +270,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>B8B5E1FD1075514E002E9229</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>SUVerify.m</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>B8B5E1FE1075514E002E9229</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>SUVerify.m</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>B8DEBA791075542A002FF283</string>
-						<key>history</key>
-						<array>
-							<string>B8B5E2071075521A002E9229</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1493, 920}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>202 56 1493 961 0 0 1920 1058 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -386,6 +345,7 @@
 									<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 									<array>
 										<array>
+											<integer>3</integer>
 											<integer>1</integer>
 											<integer>0</integer>
 										</array>
@@ -416,7 +376,7 @@
 									<real>43</real>
 								</array>
 								<key>RubberWindowFrame</key>
-								<string>524 546 643 436 0 0 1920 1058 </string>
+								<string>-1399 426 643 436 -1680 30 1680 1050 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXSmartGroupTreeModule</string>
@@ -562,8 +522,8 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>B8DEBA771075542A002FF283</string>
-				<string>B8DEBA781075542A002FF283</string>
+				<string>B8DEBAA010756215002FF283</string>
+				<string>B8DEBAA110756215002FF283</string>
 				<string>1C9437FD063B20B00039CFAC</string>
 				<string>1C9437FE063B20B00039CFAC</string>
 				<string>1C9437FF063B20B00039CFAC</string>
@@ -583,7 +543,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>276124714.68119401</real>
+	<real>276128277.25334299</real>
 	<key>ToolbarConfigUserDefaultsMinorVersion</key>
 	<string>2</string>
 	<key>ToolbarDisplayMode</key>
@@ -600,12 +560,13 @@
 	<integer>0</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>B8DEBAA210756215002FF283</string>
 		<string>1C530D52069F1CE1000CFCEE</string>
 		<string>B8B5E1FD1075514E002E9229</string>
 		<string>/Users/lakshmivyas/work/XcodeScripts/SUVerify/SUVerify.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>524 546 643 436 0 0 1920 1058 </string>
+	<string>-1399 426 643 436 -1680 30 1680 1050 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -780,6 +741,8 @@
 							<string>158pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -819,7 +782,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D52069F1CE1000CFCEE</string>
-				<string>B8DEBA7610755429002FF283</string>
+				<string>B8DEBA9F1075620E002FF283</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

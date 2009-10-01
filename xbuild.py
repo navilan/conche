@@ -1,14 +1,18 @@
 import sys
 from buildflow import Builder
 
-def main(argv):
-    # if not Builder().get():
-    #       print "Get failed. Terminating xbuild." 
-    #       return      
-    # if not Builder().build():
-    #    print "Build failed. Terminating xbuild." 
-    #    return         
-    if not Builder().package():
+def main(argv):   
+    builder = Builder()
+    if not builder.get():
+      print "Get failed. Terminating xbuild." 
+      return      
+    if not builder.build():
+      print "Build failed. Terminating xbuild." 
+      return         
+    if not builder.get_version():
+      print "Build failed. Terminating xbuild." 
+      return      
+    if not builder.package():
       print "Packaging failed. Terminating xbuild." 
       return   
      
