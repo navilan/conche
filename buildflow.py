@@ -50,20 +50,11 @@ class Builder(object):
             if arg:
                 args += arg
                 args += " "
-        return args        
+        return args 
+        
+    def package(self):
+                   
 
-# Clean
-
-    # 1. Clean up local   
-
-
-# Build
-    
-    # 2. Get from git             
-
-    
-    # 3. Call xcodebuild                        
-    
                         
 # Package
     
