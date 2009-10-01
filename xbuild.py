@@ -3,9 +3,9 @@ from buildflow import Builder
 
 def main(argv):   
     builder = Builder()
-    if not builder.get():
-      print "Get failed. Terminating xbuild." 
-      return      
+    # if not builder.get():
+    #   print "Get failed. Terminating xbuild." 
+    #   return      
     if not builder.build():
       print "Build failed. Terminating xbuild." 
       return         
