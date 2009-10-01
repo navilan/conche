@@ -15,10 +15,8 @@ PROJECT_ROOT =  '/Users/lakshmivyas/xbuild/Fount'
 BUILD_ROOT =  os.path.join(XBUILD_TARGET_PATH, 'build')
 RELEASE_ROOT = os.path.join(XBUILD_TARGET_PATH, 'out')
 APP_NAME = 'Fount'
-
-
  
-# SPARKLE_PUB_KEY =
-# SPARKLE_PRI_KEY =
-# 
-#               
+                                           
+SUVerifier =  os.path.join(XBUILD_PATH, 'SUVerify/build/Release/SUVerify')                                                          
+SPARKLE_PUB_KEY = os.path.join(PROJECT_ROOT, 'dsa_pub.pem')
+SPARKLE_PRI_KEY = os.path.join(XBUILD_PATH, 'dsa_priv.pem')

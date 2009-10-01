@@ -1,0 +1,101 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Release;
+		activeExecutable = B8B5E1A110754BBC002E9229 /* SUVerify */;
+		activeTarget = 8DD76F960486AA7600D96B5E /* SUVerify */;
+		addToTargets = (
+			8DD76F960486AA7600D96B5E /* SUVerify */,
+		);
+		codeSenseManager = B8B5E1A910754BDB002E9229 /* Code sense */;
+		executables = (
+			B8B5E1A110754BBC002E9229 /* SUVerify */,
+		);
+		perUserDictionary = {
+			PBXPerProjectTemplateStateSaveDate = 276124601;
+			PBXWorkspaceStateSaveDate = 276124601;
+		};
+		perUserProjectItems = {
+			B8B5E2071075521A002E9229 /* PBXTextBookmark */ = B8B5E2071075521A002E9229 /* PBXTextBookmark */;
+			B8DEBA791075542A002FF283 /* PBXTextBookmark */ = B8DEBA791075542A002FF283 /* PBXTextBookmark */;
+		};
+		sourceControlManager = B8B5E1A810754BDB002E9229 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	08FB7796FE84155DC02AAC07 /* SUVerify.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1434, 904}}";
+			sepNavSelRange = "{792, 0}";
+			sepNavVisRange = "{0, 850}";
+			sepNavWindowFrame = "{{202, 0}, {1493, 1017}}";
+		};
+	};
+	8DD76F960486AA7600D96B5E /* SUVerify */ = {
+		activeExec = 0;
+		executables = (
+			B8B5E1A110754BBC002E9229 /* SUVerify */,
+		);
+	};
+	B8B5E1A110754BBC002E9229 /* SUVerify */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = SUVerify;
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	B8B5E1A810754BDB002E9229 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	B8B5E1A910754BDB002E9229 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	B8B5E2071075521A002E9229 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* SUVerify.m */;
+		name = "SUVerify.m: 16";
+		rLen = 0;
+		rLoc = 792;
+		rType = 0;
+		vrLen = 850;
+		vrLoc = 0;
+	};
+	B8DEBA791075542A002FF283 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* SUVerify.m */;
+		name = "SUVerify.m: 16";
+		rLen = 0;
+		rLoc = 792;
+		rType = 0;
+		vrLen = 850;
+		vrLoc = 0;
+	};
+}

@@ -1,5 +1,4 @@
 from subprocess import Popen, PIPE
-
 import settings
 from file_system import File, Folder
  
@@ -34,7 +33,22 @@ class Builder(object):
             target.delete()   
         app.move_to(release_root) 
         return True
-        
+
+    def package(self):            
+         app_name = settings.APP_NAME + ".app"                              
+         release_root = Folder(settings.RELEASE_ROOT)
+         app = release_root.child_folder(app_name)
+         zip_path = app.zzip()                                                                       
+         sign_cmd = 'openssl dgst -sha1 -binary < "' + zip_path + '" | openssl dgst -dss1 -sign "' + settings.SPARKLE_PRI_KEY + '" | openssl enc -base64'                                     
+         cmd = Popen(sign_cmd, stdout=PIPE, shell=True)
+         key = cmd.communicate()[0]    
+         
+         if not cmd.returncode == 0:
+             return False           
+             
+         cmd = Popen(settings.SUVerifier + ' "'  + zip_path + '" "' + key + '" "' + settings.SPARKLE_PUB_KEY + '"', shell=True)
+         cmd.communicate()    
+         return cmd.returncode == 0
         
     def makearg(self, actual_key, settings_key):
         if not hasattr(settings, settings_key):
@@ -52,17 +66,18 @@ class Builder(object):
                 args += " "
         return args 
         
-    def package(self):
+        
                    
 
                         
 # Package
     
     # 4. Zip the archive
-    # 5. Sign with sparkle
-    # 6. Check git tag with current. if different update the tag
-    # 7. Update release notes in hyde folder    
-    # 8. Run Hyde             
+    # 5. Sign with sparkle   
+    # 6. Generate appcast
+    # 7. Check git tag with current. if different update the tag
+    # 8. Update release notes in hyde folder    
+    # 9. Run Hyde             
 # Test
 
 # Deploy    

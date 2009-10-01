@@ -13,7 +13,7 @@ import fnmatch
 from datetime import datetime
 from distutils import dir_util, file_util
 from path_util import PathUtil
-
+from zipfile import ZipFile, ZIP_DEFLATED
 
 class FileSystemEntity(object):
     """
@@ -551,7 +551,25 @@ class Folder(FileSystemEntity):
                     return False
             else:
                 return False
-        return True
+        return True        
+        
+    def zzip(self):
+        folder = self   
+        zip_path = self.parent.child(folder.name + ".zip")
+        class Zipper(object):   
+            
+            def __init__(self):
+                super(Zipper, self).__init__()                   
+                self.zip_file = ZipFile(zip_path, 'w', ZIP_DEFLATED)
+                            
+            def visit_file(self, file):          
+                path = Folder(folder.name).child_folder(file.parent.get_fragment(folder)).child(file.name)
+                self.zip_file.write(str(file), path)
+
+            def visit_complete(self):        
+                self.zip_file.close()
+        self.walk(Zipper())                
+        return zip_path
 
     def walk(self, visitor = None, pattern = None):
         """

@@ -5,9 +5,12 @@ def main(argv):
     # if not Builder().get():
     #       print "Get failed. Terminating xbuild." 
     #       return      
-    if not Builder().build():
-       print "Build failed. Terminating xbuild." 
-       return
+    # if not Builder().build():
+    #    print "Build failed. Terminating xbuild." 
+    #    return         
+    if not Builder().package():
+      print "Packaging failed. Terminating xbuild." 
+      return   
      
     print "Build Succeeded."
         
