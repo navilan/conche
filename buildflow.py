@@ -109,14 +109,28 @@ class Builder(object):
         vzip = File(release_root.child(vzip_name))
         connection = Connection(settings.AWS_ACCESS_ID, settings.AWS_ACCESS_KEY)
         bucket = connection.get_bucket(settings.AWS_BUCKET)
-        key = Key(bucket)
+        key = bucket.new_key(Folder(settings.AWS_PATH).child(vzip_name))
         def dep_cb(done, rem):                                        
             print str(done) + "/" + str(rem) + " bytes transferred"
         key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)            
         return True
         
-    def update_git(self):
-        if()
-            
-
-
+    def update_git(self):   
+        root = Folder(settings.PROJECT_ROOT) 
+        root.cd()      
+        Popen('pwd', shell=True).communicate()
+        cmd = Popen('git tag -l ' + str(self.build_version), stdout=PIPE, shell=True)
+        tag = cmd.communicate()[0].strip()
+        if cmd.returncode:
+            return False
+        if not tag == '':                                        
+            print 'Error: **********************'
+            print 'Did you forget to update the version number?'            
+            print 'Repository is already tagged with ' + str(self.build_version)                        
+            return False         
+        tag_cmd =  'git tag -m"' + self.short_version_string + '" ' + str(self.build_version)   
+        cmd = Popen(tag_cmd, stdout=PIPE, shell=True)
+        cmd.communicate()
+        if cmd.returncode:
+            return False  
+        return True         
