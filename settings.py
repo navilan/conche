@@ -19,7 +19,12 @@ APP_NAME = 'Fount'
                                            
 SUVerifier =  os.path.join(XBUILD_PATH, 'SUVerify/build/Release/SUVerify')                                                          
 SPARKLE_PUB_KEY = os.path.join(PROJECT_ROOT, 'dsa_pub.pem')
-SPARKLE_PRI_KEY = os.path.join(XBUILD_PATH, 'dsa_priv.pem')
+SPARKLE_PRI_KEY = os.path.join(XBUILD_PATH, 'dsa_priv.pem')    
+
+AWS_ACCESS_ID = 'AKIAI7CKLZUTB36XFNCQ'
+AWS_ACCESS_KEY = 'ovXRvMMBUMyhuUP3p723zuh2Gs018mqVMyh6/72b'
+AWS_BUCKET = 'slammer'
+AWS_PATH =  'releases'
 
 APPCAST_TEMPLATE =\
 '<item>\

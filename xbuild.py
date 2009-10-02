@@ -15,6 +15,9 @@ def main(argv):
     if not builder.package():
       print "Packaging failed. Terminating xbuild." 
       return   
+    if not builder.deploy():
+      print "Deployment failed. Terminating xbuild." 
+      return      
      
     print "Build Succeeded."
         

@@ -40,14 +40,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>95</integer>
+				<integer>8</integer>
 				<key>line</key>
-				<integer>79</integer>
+				<integer>87</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>55</integer>
+			<integer>84</integer>
 		</dict>
 		<key>file_system.py</key>
 		<dict>
@@ -68,23 +68,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>17</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>26</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>1</integer>
+			<integer>6</integer>
 		</dict>
 		<key>xbuild.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>6</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>5</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -123,6 +123,6 @@
 		</dict>
 	</dict>
 	<key>windowFrame</key>
-	<string>{{0, 0}, {1920, 1058}}</string>
+	<string>{{-1676, 30}, {1676, 1050}}</string>
 </dict>
 </plist>

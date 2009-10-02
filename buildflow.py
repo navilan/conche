@@ -5,7 +5,11 @@ import settings
 from Foundation import NSMutableDictionary
 
 from file_system import File, Folder
-from datetime import datetime
+from datetime import datetime 
+
+from boto.s3 import Connection, Key
+
+
 
 class Builder(object):
     
@@ -97,17 +101,22 @@ class Builder(object):
                 args += arg
                 args += " "
         return args            
-
-
-    # 6. Generate appcast
-    # 7. Check git tag with current. if different update the tag
-    # 8. Update release notes in hyde folder    
-    # 9. Run Hyde             
-# Test
-
-# Deploy    
-
-# 9. Upload the file to S3
-# 10. Upload to Google
+        
+    def deploy(self):                  
+        app_name = settings.APP_NAME + ".app"                              
+        release_root = Folder(settings.RELEASE_ROOT)         
+        vzip_name = app_name + "-" + self.short_version_string + ".zip"                    
+        vzip = File(release_root.child(vzip_name))
+        connection = Connection(settings.AWS_ACCESS_ID, settings.AWS_ACCESS_KEY)
+        bucket = connection.get_bucket(settings.AWS_BUCKET)
+        key = Key(bucket)
+        def dep_cb(done, rem):                                        
+            print str(done) + "/" + str(rem) + " bytes transferred"
+        key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)            
+        return True
+        
+    def update_git(self):
+        if()
+            
 
 
