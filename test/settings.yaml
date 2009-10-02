@@ -1,0 +1,84 @@
+App:
+    name: Fount
+    build_root: $root/build
+    source_root: $root/Fount
+    release_root: $root/release
+
+Providers:
+    VersionControl:
+        provider: providers.Git
+        settings:
+            repository: git@github.com:lakshmivyas/Fount.git
+            git: /usr/local/git/bin/git
+
+    Versioner:
+        provider: providers.InfoPlist
+
+    Builder:
+        provider: providers.Xcode
+        settings:
+            project: Fount.xcodeproj
+            target: Fount
+            configuration: Release
+            xcode: /usr/bin/xcodebuild
+
+    Packager:
+        provider: providers.Zip
+        settings:
+            name:$app_name-$marketing_version.zip
+
+    ReleaseNotesGenerator:
+        provider: providers.TemplateReleaseNotesGenerator
+        settings:
+            name: ReleaseNotes-$app_name-$marketing_version.html
+            notes_file: rnotes.txt
+
+    Appcaster:
+        provider: providers.Sparkle
+        settings:
+            public_key: $source_root/dsa_pub.pem
+            private_key: $build_root/dsa_pri.pem
+            verifier: $root/../SUVerify/build/Release/SUVerify
+            appcast_name: $app_name-$marketing_version-appcast.xml
+            appcast_template: |
+                <item>
+                    <title>$app Version $vstring</title>
+                    <sparkle:releaseNotesLink>
+                        http://mysite.com/rnotes/$app-$vstring.html
+                    </sparkle:releaseNotesLink>
+                    <pubDate>$pub_date</pubDate>
+                    <enclosure
+                        url="http://mysite.com/$app/$zip"
+                        sparkle:version="$version"
+                        sparkle:shortVersionString="$vstring"
+                        type="application/octet-stream"
+                        length="$bytes"
+                        sparkle:dsaSignature="$sign"
+                    />
+                 </item>                  
+
+    Publisher:
+        provider: providers.S3
+        settings:
+            id: AKIAI7CKLZUTB36XFNCQ
+            key: ovXRvMMBUMyhuUP3p723zuh2Gs018mqVMyh6/72b
+            bucket: 'slammer'
+            path: 'releases'
+Tasks:
+    Appcast:
+        -sign
+        -verify
+        -generate_appcast
+    PublicRelease:
+        - clean
+        - clone
+        - build
+        - get_version
+        - package  
+        - generate_release_notes
+        - Task(Appcast)
+        - tag
+        - publish
+    LocalTest:
+        - refresh
+        - build

@@ -243,7 +243,11 @@ class File(FileSystemEntity):
         """
         shutil.copy(self.path, str(destination))
         return self.__get_destination__(destination)
-
+        
+    @property                        
+    def size(self):
+        return os.path.getsize(self.path)
+             
     def write(self, text, encoding="utf-8"):
         """
         Writes the given text to the file using the given encoding.
