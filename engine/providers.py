@@ -19,7 +19,6 @@ class Provider(object):
          task()
 
      def execute(self, cmdstring, logresult=True):         
-         print cmdstring
          cmd = Popen(cmdstring, stdout=PIPE, shell=True)            
          cmdresult = cmd.communicate()[0]
          if cmd.returncode:
@@ -50,14 +49,14 @@ class Git(Provider):
         self.app.root.cd()
         self.execute(self.eval('git') + " clone " + self.eval('repository'))
 
-    def tag(self):
+    def tag(self): 
         self.app.source_root.cd()
         tag = self.execute(self.eval('git') + ' tag -l ' +  self.app.build_version)
         if not tag == '':
             self.fail('Did you forget to change the version number?')
-        self.execute(self.eval('git') + ' tag -m "' +
+            self.execute(self.eval('git') + ' tag -m "' +
                         self.app.marketing_version + '" ' + self.app.build_version)
-        self.execute(self.eval('git') + ' push --tags')
+            self.execute(self.eval('git') + ' push --tags')
 
 class Xcode(Provider):
 
@@ -73,7 +72,7 @@ class Xcode(Provider):
         self.execute(cmd)
         self.app.path = None
 
-    def build(self):
+    def build(self, dry=False):
         self.clean()
         cmd = self.eval('xcode')
         cmd = cmd + " -target " + self.eval('target')
@@ -90,9 +89,10 @@ class InfoPlist(Provider):
         self.app.build_version = None
         self.app.marketing_version = None
 
-    def get_version(self):
-        print self.app.path
+    def get_version(self, dry=False):
         info = Folder(self.app.path).child('Contents/Info.plist')
+        if not File(info).exists:
+            self.fail("InfoPlist not fount at :" + info)
         from Foundation import NSMutableDictionary 
         plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info)
         self.app.build_version = plist['CFBundleVersion']
@@ -124,7 +124,7 @@ class TemplateReleaseNotesGenerator(Provider):
         self.app.release_notes = File(self.app.release_root.child(release_notes_name))
         notes = File(self.eval('notes_file')).read_all()
         expanded_notes = self.app.substitute(notes)
-        self.app.release_notes.write(expanded_notes)       
+        self.app.release_notes.write(expanded_notes) 
 
 
 class Sparkle(Provider):

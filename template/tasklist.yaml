@@ -1,13 +1,13 @@
 Appcast:
-    -sign
-    -verify
-    -generate_appcast
+    - sign
+    - verify
+    - generate_appcast
 PublicRelease:
     - clone
     - build
-    - get_version
-    - package  
+    - get_version 
     - generate_release_notes
+    - package
     - Appcast
     - tag
     - publish
