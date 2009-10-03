@@ -21,9 +21,9 @@ class App(object):
         self.settings = settings
         root = root.rstrip('/')
         self.root = Folder(root)
-        self.build_root = Folder(string.Template(settings['build_root']).substitute(root=root))
-        self.source_root = Folder(string.Template(settings['source_root']).substitute(root=root))
-        self.release_root = Folder(string.Template(settings['release_root']).substitute(root=root))                
+        self.build_root = Folder(string.Template(settings['build_root']).substitute(root=root, app_name=self.name))
+        self.source_root = Folder(string.Template(settings['source_root']).substitute(root=root, app_name=self.name))
+        self.release_root = Folder(string.Template(settings['release_root']).substitute(root=root, app_name=self.name))                
         self.path = None          
         self.build_version = None
         self.marketing_version = None 
