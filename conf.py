@@ -12,7 +12,7 @@ logger.addHandler(logging.StreamHandler())
 try:
     import yaml
 except ImportError:
-    logger.error('PyYaml is required for conche. Please run `sudo easy_install yaml`')                                                                                            
+    logger.error('PyYaml is required for conche. Please run `sudo easy_install pyyaml`')                                                                                            
     raise
 
 class App(object): 

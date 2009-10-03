@@ -36,7 +36,7 @@ Tasks are configured using YAML.
 
 ## Install
 
-    sudo easy_install yaml 
+    sudo easy_install pyyaml 
 
 If you need Amazon S3 support:
 

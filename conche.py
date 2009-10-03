@@ -13,9 +13,6 @@ def main(argv):
     parser.add_option("-a", "--app", 
                         dest = "app", 
                         help = "The application to build. Required.")
-    parser.add_option("-a", "--app", 
-                        dest = "app", 
-                        help = "The application to build. Required.")
     parser.add_option("-t", "--task", 
                         dest = "task", 
                         default = 'default',

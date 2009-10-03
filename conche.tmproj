@@ -40,14 +40,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>50</integer>
+				<integer>9</integer>
 				<key>line</key>
-				<integer>71</integer>
+				<integer>70</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>42</integer>
+			<integer>60</integer>
 		</dict>
 		<key>SUVerify/SUDSAVerifier.h</key>
 		<dict>
@@ -98,14 +98,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>42</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>94</integer>
+				<integer>130</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>76</integer>
+			<integer>117</integer>
 		</dict>
 		<key>file_system.py</key>
 		<dict>
@@ -149,12 +149,27 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>template/tasklist.yaml</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>28</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>file_system.py</string>
 		<string>README.MARKDOWN</string>
 		<string>template/providers.yaml</string>
+		<string>template/tasklist.yaml</string>
 		<string>engine/providers.py</string>
 		<string>template/apps.yaml</string>
 		<string>conf.py</string>
