@@ -1,0 +1,76 @@
+VersionControl:
+    provider: engine.providers.Git
+    tasks: 
+        - clone
+        - tag
+    settings:
+        repository: git@github.com:lakshmivyas/Fount.git
+        git: /usr/local/git/bin/git
+
+Versioner:
+    provider: engine.providers.InfoPlist
+    tasks: 
+        - get_version
+
+Builder:
+    provider: engine.providers.Xcode
+    tasks: 
+        - build
+    settings:
+        project: Fount.xcodeproj
+        target: Fount
+        configuration: Release
+        xcode: /usr/bin/xcodebuild
+
+Packager:
+    provider: engine.providers.Zip
+    tasks: 
+        - package
+    settings:
+        name:$app_name-$marketing_version.zip
+
+ReleaseNotesGenerator:
+    provider: engine.providers.TemplateReleaseNotesGenerator
+    tasks: 
+        - generate_release_notes
+    settings:
+        name: ReleaseNotes-$app_name-$marketing_version.html
+        notes_file: rnotes.txt
+
+Appcaster:
+    provider: engine.providers.Sparkle
+    tasks: 
+        - sign
+        - verify
+        - generate_appcast
+    settings:
+        public_key: $source_root/dsa_pub.pem
+        private_key: $build_root/dsa_pri.pem
+        verifier: $root/../SUVerify/build/Release/SUVerify
+        appcast_name: $app_name-$marketing_version-appcast.xml
+        appcast_template: |
+            <item>
+                <title>$app_name Version $marketing_version</title>
+                <sparkle:releaseNotesLink>
+                    http://mysite.com/rnotes/$app-$marketing_version.html
+                </sparkle:releaseNotesLink>
+                <pubDate>$pub_date</pubDate>
+                <enclosure
+                    url="http://mysite.com/$app_name/$archive_name"
+                    sparkle:version="$build_version"
+                    sparkle:shortVersionString="$marketing_version"
+                    type="application/octet-stream"
+                    length="$bytes"
+                    sparkle:dsaSignature="$sign"
+                />
+             </item>                  
+
+Publisher:
+    provider: engine.providers.S3
+    tasks: 
+        - publish
+    settings:
+        id: AKIAI7CKLZUTB36XFNCQ
+        key: ovXRvMMBUMyhuUP3p723zuh2Gs018mqVMyh6/72b
+        bucket: 'slammer'
+        path: 'releases'

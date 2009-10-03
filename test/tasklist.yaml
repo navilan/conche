@@ -1,0 +1,16 @@
+Appcast:
+    -sign
+    -verify
+    -generate_appcast
+PublicRelease:
+    - clone
+    - build
+    - get_version
+    - package  
+    - generate_release_notes
+    - Appcast
+    - tag
+    - publish
+LocalTest:
+    - refresh
+    - build

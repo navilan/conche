@@ -1,13 +1,13 @@
-import sys
+import sys 
+import string
 from subprocess import Popen, PIPE
-
 
 class Provider(object):
     
-     def __init__(self, ptype, app, settings):
+     def __init__(self, ptype, app, conf):
         self.type = ptype
-        self.app = app
-        self.settings = settings
+        self.app = app                 
+        self.settings = conf.get('settings', {})
 
 
      def perform_task(self, task_name):
@@ -22,7 +22,10 @@ class Provider(object):
          if cmd.returncode:
              self.fail(cmdresult)
          self.app.logger.info(cmdresult)
-         return cmdresult
+         return cmdresult   
+         
+     def eval(self, setting_name):
+         return self.app.substitute(self.settings[setting_name])    
 
      def fail(self, reason, error=None):
          self.app.logger.error(
@@ -32,7 +35,7 @@ class Provider(object):
              raise error
          else:         
              raise ProviderException(reason)
-
+             
 class Git(Provider): 
     
    
@@ -41,25 +44,25 @@ class Git(Provider):
 
     def clone(self):
         self.app.root.cd()
-        self.execute(self.settings.git + " clone " + self.settings.repository)
+        self.execute(self.eval('git') + " clone " + self.eval('repository'))
 
     def tag(self):
         self.app.source_root.cd()
-        tag = self.execute(self.settings.git + ' tag -l ' +  self.app.version)
+        tag = self.execute(self.eval('git') + ' tag -l ' +  self.app.build_version)
         if not tag == '':
             self.fail('Did you forget to change the version number?')
-        self.execute(self.settings.git + ' tag -m "' +
-                        self.app.short_version_string + '" ' + self.app.version)
-        self.execute(self.settings.git + ' push --tags')
+        self.execute(self.eval('git') + ' tag -m "' +
+                        self.app.marketing_version + '" ' + self.app.build_version)
+        self.execute(self.eval('git') + ' push --tags')
 
 class Xcode(Provider):
 
     @property
     def project(self):
-        return self.app.source_root.child(self.settings.project)
+        return self.app.source_root.child(self.eval('project'))
 
     def clean(self):
-        cmd = self.settings.xcode
+        cmd = self.eval('xcode')
         cmd = cmd + " -project=" + self.project
         cmd += " clean"
         self.execute(cmd)
@@ -67,14 +70,14 @@ class Xcode(Provider):
 
     def build(self):
         self.clean()
-        cmd = settings.xcode
-        cmd = cmd + " -target = " + self.settings.target
-        cmd = cmd + " -configuration = " + self.settings.configuration
+        cmd = self.eval('xcode')
+        cmd = cmd + " -target = " + self.eval('target')
+        cmd = cmd + " -configuration = " + self.eval('configuration')
         cmd = cmd + " -project=" + self.project
         cmd = cmd + " SYMROOT=" + self.app.build_root
         self.execute(cmd)   
         self.app.path = self.app.build_root.child_folder(
-                                self.settings.configuration).child(self.app.name + ".app")
+                                self.eval('configuration')).child(self.app.name + ".app")
 
 
 class InfoPlist(Provider):
@@ -96,10 +99,7 @@ class Zip(Provider):
     def package(self):
         app = Folder(self.app.path)
         zip_path = app.zzip()
-        vzip_name = string.Template(self.settings.name).substitute(
-                            build_version=self.app.build_version,
-                            marketing_version=self.app.marketing_version,
-                            app_name=self.app.name)
+        vzip_name = self.eval('name')
         vzip_path = self.app.release_root.child(vzip_name)
         self.app.archive = File(vzip_path)
         self.app.archive.delete()        
@@ -111,19 +111,10 @@ class TemplateReleaseNotesGenerator(Provider):
         self.app.release_notes = None
 
     def generate_release_notes(self):
-        release_notes_name = string.Template(self.settings.name).substitute(
-                                build_version=self.app.build_version,
-                                marketing_version=self.app.marketing_version,
-                                app_name=self.app.name)
+        release_notes_name = self.eval('name')
         self.app.release_notes = File(self.app.release_root.child(release_notes_name))
-        notes = File(self.settings.notes_file).read_all()
-        template = string.Template(notes)
-        expanded_notes = template.substitute(
-                             build_version=self.app.build_version,
-                             marketing_version=self.app.marketing_version,
-                             app_name = self.app.name,
-                             release_notes_name = self.app.release_notes.name,
-                             date = self.app.datestring)
+        notes = File(self.eval('notes_file')).read_all()
+        expanded_notes = self.app.substitute(notes)
         self.app.release_notes.write(expanded_notes)       
 
 
@@ -135,34 +126,24 @@ class Sparkle(Provider):
 
    def sign(self):
        sign_cmd = 'openssl dgst -sha1 -binary < "' + self.app.archive_path + '"'
-       sign_cmd = sign_cmd + ' | openssl dgst -dss1 -sign "' + self.settings.private_key + '"'
+       sign_cmd = sign_cmd + ' | openssl dgst -dss1 -sign "' + self.eval('private_key') + '"'
        sign_cmd = sign_cmd + ' | openssl enc -base64'
        self.app.signature = self.execute(sign_cmd)
 
    def verify(self):
-       verify_cmd = '"' + self.settings.Verifier + '"'
+       verify_cmd = '"' + self.eval('Verifier') + '"'
        verify_cmd = verify_cmd + ' "' + self.app.archive.path + '"'
        verify_cmd = verify_cmd + ' "' + self.app.signature + '"'
-       verify_cmd = verify_cmd + ' "' + self.settings.public_key + '"'
+       verify_cmd = verify_cmd + ' "' + self.eval('public_key') + '"'
        self.execute(verify_cmd)
 
-   def generate_app_cast(self):
-       appcast_name = string.Template(self.settings.appcast_name).substitute(
+   def generate_appcast(self):
+       appcast_name = string.Template(self.eval('appcast_name')).substitute(
                            build_version=self.app.build_version,
                            marketing_version=self.app.marketing_version,
                            app_name=self.app.name)
        self.app.appcast = File(self.app.release_root.child(appcast_name))
-       template = string.Template(self.settings.appcast_template)
-       appcast_item = template.substitute(
-                            build_version=self.app.build_version,
-                            marketing_version=self.app.marketing_version,
-                            app_name = self.app.name,
-                            archive_name = self.app.archive.name,
-                            appcast_name = self.app.appcast.name,
-                            release_notes_name = self.app.release_notes.name,
-                            bytes = self.app.archive.length,
-                            signature = self.app.signature,
-                            date = self.app.datestring)
+       appcast_item = self.eval('appcast_template')
        self.app.appcast.write(appcast_item)
 
 
@@ -176,9 +157,9 @@ class S3(Provider):
             self.fail("Boto required for S3 publish. Please run `sudo easy_install boto`", e)    
                  
         vzip = self.app.archive
-        connection = Connection(self.settings.id, self.settings.key)
-        bucket = connection.get_bucket(self.settings.bucket)
-        key = bucket.new_key(Folder(self.settings.path).child(vzip.name))
+        connection = Connection(self.eval('id'), self.eval('key'))
+        bucket = connection.get_bucket(self.eval('bucket'))
+        key = bucket.new_key(Folder(self.eval('path')).child(vzip.name))
         def dep_cb(done, rem):            
             self.app.logger.info(str(done) + "/" + str(rem) + " bytes transferred")
         key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)

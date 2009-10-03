@@ -1,0 +1,4 @@
+Fount:
+    build_root: $root/build
+    source_root: $root/Fount
+    release_root: $root/release

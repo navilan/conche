@@ -12,8 +12,7 @@ def main(argv):
     parser = OptionParser(usage="%prog [-f] [-q]", version="%prog 0.1a")
     parser.add_option("-a", "--app", 
                         dest = "app", 
-                        default = 'default',
-                        help = "The application to build. Optional. Default: `default`.")
+                        help = "The application to build. Required.")
     parser.add_option("-t", "--task", 
                         dest = "task", 
                         default = 'default',
@@ -23,14 +22,16 @@ def main(argv):
                         help = "Conche root path. Default: Current Working Directory")
                         
     (options, args) = parser.parse_args()
-    
     if len(args):
         parser.error("Unexpected arguments encountered.")
+    
+    if not options.app:
+        parser.error("You must specify an application.")
         
     path = options.path
     
-    cnf = Conf(Folder(path).child('settings.yaml'))
-    cnf.dump()            
+    cnf = Conf(path)
+    cnf.run_task(options.app, options.task)
     
 if __name__ == "__main__":
     main(sys.argv[1:])
