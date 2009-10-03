@@ -1,14 +1,14 @@
-import sys 
+import sys
 import string
-from subprocess import Popen, PIPE    
+from subprocess import Popen, PIPE
 from file_system import Folder, File
 
 
 class Provider(object):
-    
+
      def __init__(self, ptype, app, conf):
         self.type = ptype
-        self.app = app                 
+        self.app = app
         self.settings = conf.get('settings', {})
 
 
@@ -18,16 +18,16 @@ class Provider(object):
              self.fail('No Task with name:' + task_name)
          task()
 
-     def execute(self, cmdstring, logresult=True):         
-         cmd = Popen(cmdstring, stdout=PIPE, shell=True)            
+     def execute(self, cmdstring, logresult=True):
+         cmd = Popen(cmdstring, stdout=PIPE, shell=True)
          cmdresult = cmd.communicate()[0]
          if cmd.returncode:
              self.fail(cmdresult)
          self.app.logger.info(cmdresult)
-         return cmdresult   
-         
+         return cmdresult
+
      def eval(self, setting_name):
-         return self.app.substitute(self.settings[setting_name])    
+         return self.app.substitute(self.settings[setting_name])
 
      def fail(self, reason, error=None):
          self.app.logger.error(
@@ -35,23 +35,21 @@ class Provider(object):
              '$provider failed bacause of this:$reason').substitute(provider=self.type, reason=reason))
          if error:
              raise error
-         else:         
+         else:
              raise Exception(reason)
-             
-class Git(Provider): 
-    
-   
+
+class Git(Provider):
     def clean(self):
         self.app.source_root.delete()
 
-    def clone(self):  
+    def clone(self):
         self.clean()
         if not self.app.source_root.parent.exists:
             self.app.source_root.parent.make()
         self.app.source_root.parent.cd()
         self.execute(self.eval('git') + " clone " + self.eval('repository'))
 
-    def tag(self):          
+    def tag(self):
         self.app.source_root.cd()
         tag = self.execute(self.eval('git') + ' tag -l ' +  self.app.build_version)
         if not tag == '':
@@ -69,7 +67,8 @@ class Xcode(Provider):
     def clean(self):
         self.app.source_root.cd()
         cmd = self.eval('xcode')
-        cmd = cmd + " -project " + self.project
+        cmd = cmd + " -project " + self.project           
+        cmd = cmd + " SYMROOT=" + str(self.app.build_root)        
         cmd += " clean"
         self.execute(cmd)
         self.app.path = None
@@ -81,10 +80,10 @@ class Xcode(Provider):
         cmd = cmd + " -configuration " + self.eval('configuration')
         cmd = cmd + " -project " + self.project
         cmd = cmd + " SYMROOT=" + str(self.app.build_root)
-        self.execute(cmd)   
+        self.execute(cmd)
         self.app.path = self.app.build_root.child_folder(
                                 self.eval('configuration')).child(self.app.name + ".app")
-     
+
 
 class InfoPlist(Provider):
     def clean(self):
@@ -95,7 +94,7 @@ class InfoPlist(Provider):
         info = Folder(self.app.path).child('Contents/Info.plist')
         if not File(info).exists:
             self.fail("InfoPlist not found at :" + info)
-        from Foundation import NSMutableDictionary 
+        from Foundation import NSMutableDictionary
         plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info)
         self.app.build_version = plist['CFBundleVersion']
         self.app.marketing_version = plist.get('CFBundleShortVersionString', self.app.build_version)
@@ -105,7 +104,7 @@ class Zip(Provider):
     def clean(self):
         self.app.archive.delete()
 
-    def package(self):           
+    def package(self):
         if not self.app.release_root.exists:
             self.app.release_root.make()
         app = Folder(self.app.path)
@@ -113,7 +112,7 @@ class Zip(Provider):
         vzip_name = self.eval('name')
         vzip_path = self.app.release_root.child(vzip_name)
         self.app.archive = File(vzip_path)
-        self.app.archive.delete()        
+        self.app.archive.delete()
         File(zip_path).move_to(vzip_path)
 
 class TemplateReleaseNotesGenerator(Provider):
@@ -121,14 +120,14 @@ class TemplateReleaseNotesGenerator(Provider):
         self.app.release_notes.delete()
         self.app.release_notes = None
 
-    def generate_release_notes(self):                      
+    def generate_release_notes(self):
         if not self.app.release_root.exists:
             self.app.release_root.make()
         release_notes_name = self.eval('name')
         self.app.release_notes = File(self.app.release_root.child(release_notes_name))
         notes = File(self.eval('notes_file')).read_all()
         expanded_notes = self.app.substitute(notes)
-        self.app.release_notes.write(expanded_notes) 
+        self.app.release_notes.write(expanded_notes)
 
 
 class Sparkle(Provider):
@@ -160,16 +159,16 @@ class Sparkle(Provider):
 class S3(Provider):
     def clean(self):pass
 
-    def publish(self):             
+    def publish(self):
         try:
             from boto.s3 import Connection, Key, Bucket
         except ImportError, e:
-            self.fail("Boto required for S3 publish. Please run `sudo easy_install boto`", e)    
-                 
+            self.fail("Boto required for S3 publish. Please run `sudo easy_install boto`", e)
+
         vzip = self.app.archive
         connection = Connection(self.eval('id'), self.eval('key'))
         bucket = connection.get_bucket(self.eval('bucket'))
         key = bucket.new_key(Folder(self.eval('path')).child(vzip.name))
-        def dep_cb(done, rem):            
+        def dep_cb(done, rem):
             self.app.logger.info(str(done) + "/" + str(rem) + " bytes transferred")
         key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)
