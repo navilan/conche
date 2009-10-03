@@ -18,6 +18,7 @@ except ImportError:
 class App(object): 
     def __init__(self, name, settings, root):
         self.name = name       
+        self.settings = settings
         root = root.rstrip('/')
         self.root = Folder(root)
         self.build_root = Folder(string.Template(settings['build_root']).substitute(root=root))
@@ -86,6 +87,8 @@ class Conf(object):
         self.providers = {}
         self.task_providers = {}
         for provider_type, provider_config in provider_settings.iteritems():            
+            app_config = self.app.settings.get(provider_type, {})
+            provider_config.update(app_config)
             provider = self.make(provider_type, provider_config)
             self.providers[provider_type] = provider
             for task in provider_config['tasks']:

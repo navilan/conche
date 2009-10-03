@@ -1,4 +1,26 @@
-Fount:
+$init_app:
     build_root: $root/build
     source_root: $root/Fount
     release_root: $root/release
+    VersionControl:
+        repository: github@github.com:me/$app_name.git
+    Appcaster:
+        appcast_template: |
+            <item>
+                <title>$app_name Version $marketing_version</title>
+                <sparkle:releaseNotesLink>
+                    http://mysite.com/rnotes/$app_name-$marketing_version.html
+                </sparkle:releaseNotesLink>
+                <pubDate>$date</pubDate>
+                <enclosure
+                    url="http://mysite.com/$app_name/$archive_name"
+                    sparkle:version="$build_version"
+                    sparkle:shortVersionString="$marketing_version"
+                    type="application/octet-stream"
+                    length="$bytes"
+                    sparkle:dsaSignature="$signature"
+                />
+             </item>
+    Publisher:
+        bucket: 'my_bucket'
+        path: 'releases'

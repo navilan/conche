@@ -4,7 +4,6 @@ VersionControl:
         - clone
         - tag
     settings:
-        repository: github@github.com:me/myapp.git
         git: /usr/local/git/bin/git
 
 Versioner:
@@ -48,22 +47,6 @@ Appcaster:
         private_key: $root/keys/dsa_priv.pem
         verifier: $root/SUVerify
         appcast_name: $app_name-$marketing_version-appcast.xml
-        appcast_template: |
-            <item>
-                <title>$app_name Version $marketing_version</title>
-                <sparkle:releaseNotesLink>
-                    http://mysite.com/rnotes/$app_name-$marketing_version.html
-                </sparkle:releaseNotesLink>
-                <pubDate>$date</pubDate>
-                <enclosure
-                    url="http://mysite.com/$app_name/$archive_name"
-                    sparkle:version="$build_version"
-                    sparkle:shortVersionString="$marketing_version"
-                    type="application/octet-stream"
-                    length="$bytes"
-                    sparkle:dsaSignature="$signature"
-                />
-             </item>                  
 
 Publisher:
     provider: engine.providers.S3
@@ -72,5 +55,3 @@ Publisher:
     settings:
         id: XXXXXXXXXXXXXXXXXXXXXX
         key: XXXXXXXXXXXXXXXXXXXXXXX
-        bucket: 'my_bucket'
-        path: 'releases'
