@@ -46,17 +46,19 @@ class Git(Provider):
 
     def clone(self):  
         self.clean()
-        self.app.root.cd()
+        if not self.app.source_root.parent.exists:
+            self.app.source_root.parent.make()
+        self.app.source_root.parent.cd()
         self.execute(self.eval('git') + " clone " + self.eval('repository'))
 
-    def tag(self): 
+    def tag(self):          
         self.app.source_root.cd()
         tag = self.execute(self.eval('git') + ' tag -l ' +  self.app.build_version)
         if not tag == '':
             self.fail('Did you forget to change the version number?')
-            self.execute(self.eval('git') + ' tag -m "' +
+        self.execute(self.eval('git') + ' tag -m "' +
                         self.app.marketing_version + '" ' + self.app.build_version)
-            self.execute(self.eval('git') + ' push --tags')
+        self.execute(self.eval('git') + ' push --tags')
 
 class Xcode(Provider):
 
@@ -119,7 +121,9 @@ class TemplateReleaseNotesGenerator(Provider):
         self.app.release_notes.delete()
         self.app.release_notes = None
 
-    def generate_release_notes(self):
+    def generate_release_notes(self):                      
+        if not self.app.release_root.exists:
+            self.app.release_root.make()
         release_notes_name = self.eval('name')
         self.app.release_notes = File(self.app.release_root.child(release_notes_name))
         notes = File(self.eval('notes_file')).read_all()

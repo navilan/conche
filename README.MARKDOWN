@@ -27,12 +27,15 @@ Tasks are configured using YAML.
 2. apps.yaml - List of your applications, settings and overrides for providers.
 3. tasklist.yaml - Tasks and sequences
 
-## Caveats
+## Caveats                     
+
+Some things that really should've been done already:
 
 1. No declared dependencies between tasks. If you run a task that depends on something else, its behavior is unpredictable.
-2. There are some conventions followed, primarily because its now used by one person for one app. I'll try to list some that I know:
+2. There are some conventions followed, primarily because its now used by one person for one app. I'll try to list some that I know(remember):
     1. The $build_root specified in apps.yaml is used as $SYMROOT for xcodebuild.
     2. The application project file must be in $source_root
+3. No support for rolling back.
 
 ## Install
 
@@ -86,8 +89,11 @@ Define sequences of tasks here. Please do remember that there are implicit depen
     python conche.py  -a <Your App> [-p <root>] [-t tasklist]
 
 root = Where you did the init. Default = Current Working Directory.
-tasklist = Any of the tasklists defined in tasklist.yaml or individual tasks defined by the providers. Can be comma seperated to run more than one.
+tasklist = Any of the task lists defined in tasklist.yaml or individual tasks defined by the providers. Can be comma separated to run more than one.
 
+## Contribution
+
+Please do fork. Topic branches will keep me from postponing a merge, put a smile on my face and help the planet be a better place for everyone. 
 
 ## License 
 

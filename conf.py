@@ -65,7 +65,7 @@ class App(object):
 class Conf(object):
     
     def __init__(self, path):
-        self.path = path
+        self.path = Folder(path).humblepath
         if not Folder(path).exists:
             raise ConfException(self)     
         self.app = None    
@@ -88,7 +88,9 @@ class Conf(object):
         self.task_providers = {}
         for provider_type, provider_config in provider_settings.iteritems():            
             app_config = self.app.settings.get(provider_type, {})
-            provider_config['settings'].update(app_config)
+            settings = provider_config.get('settings', {})
+            settings.update(app_config)
+            provider_config['settings'] = settings
             provider = self.make(provider_type, provider_config)
             self.providers[provider_type] = provider
             for task in provider_config['tasks']:
