@@ -92,7 +92,7 @@ class InfoPlist(Provider):
     def get_version(self, dry=False):
         info = Folder(self.app.path).child('Contents/Info.plist')
         if not File(info).exists:
-            self.fail("InfoPlist not fount at :" + info)
+            self.fail("InfoPlist not found at :" + info)
         from Foundation import NSMutableDictionary 
         plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info)
         self.app.build_version = plist['CFBundleVersion']

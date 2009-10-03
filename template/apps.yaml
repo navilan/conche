@@ -1,6 +1,6 @@
 $init_app:
     build_root: $root/build
-    source_root: $root/Fount
+    source_root: $root/$app_name
     release_root: $root/release
     VersionControl:
         repository: github@github.com:me/$app_name.git
