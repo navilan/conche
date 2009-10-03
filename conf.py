@@ -17,7 +17,8 @@ except ImportError:
 
 class App(object): 
     def __init__(self, name, settings, root):
-        self.name = name
+        self.name = name       
+        root = root.rstrip('/')
         self.root = Folder(root)
         self.build_root = Folder(string.Template(settings['build_root']).substitute(root=root))
         self.source_root = Folder(string.Template(settings['source_root']).substitute(root=root))
@@ -37,7 +38,11 @@ class App(object):
         
     def substitute(self, value):   
         template = string.Template(value)
-        d = dict(
+        d = dict(  
+                root = self.root.path,
+                build_root = self.build_root.path,
+                source_root = self.source_root.path,                
+                release_root = self.release_root.path, 
                 build_version=self.build_version,
                 marketing_version=self.marketing_version,
                 app_name = self.name,
@@ -45,14 +50,14 @@ class App(object):
                 date = self.datestring)
 
         if self.archive:       
-            d[archive_name] = self.archive.name                         
-            d[bytes] = self.archive.length
+            d['archive_name'] = self.archive.name                         
+            d['bytes'] = self.archive.size
         
         if self.appcast:
-            self.appcast_name = self.appcast.name    
+            d['appcast_name'] = self.appcast.name    
             
         if self.release_notes:
-            self.release_notes_name = self.release_notes.name 
+            d['release_notes_name'] = self.release_notes.name 
                       
         return template.substitute(d)    
         
@@ -61,7 +66,8 @@ class Conf(object):
     def __init__(self, path):
         self.path = path
         if not Folder(path).exists:
-            raise ConfException(self)
+            raise ConfException(self)     
+        self.app = None    
 
     def dump(self):   
         import pickle
@@ -92,17 +98,20 @@ class Conf(object):
 
 
     def run_task(self, app, task_name):
-        self.app_name = app
-        self.__parse__()       
-        task_list = self.tasks.get(task_name, None)
-        if task_list:
-            for subtask in task_list:
-                self.run_task(app, subtask)
-        else:        
-            provider = self.task_providers.get(task_name, None)
-            if not provider:
-                raise Exception('No Task Found for:' + task_name)
-            provider.perform_task(task_name)     
+        if not self.app:                
+            self.app_name = app
+            self.__parse__()  
+        split_tasks = task_name.split(',')  
+        for t in split_tasks:       
+            task_list = self.tasks.get(t, None)
+            if task_list:
+                for subtask in task_list:
+                    self.run_task(app, subtask)
+            else:        
+                provider = self.task_providers.get(t, None)
+                if not provider:
+                    raise Exception('No Task Found for:' + t)
+                provider.perform_task(t)     
                         
             
     def __load_settings__(self, path, file_name):

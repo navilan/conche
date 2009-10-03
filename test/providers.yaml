@@ -4,7 +4,7 @@ VersionControl:
         - clone
         - tag
     settings:
-        repository: git@github.com:lakshmivyas/Fount.git
+        repository: git@github.com:lakshmivyas/$app_name.git
         git: /usr/local/git/bin/git
 
 Versioner:
@@ -17,8 +17,8 @@ Builder:
     tasks: 
         - build
     settings:
-        project: Fount.xcodeproj
-        target: Fount
+        project: $app_name.xcodeproj
+        target: $app_name
         configuration: Release
         xcode: /usr/bin/xcodebuild
 
@@ -27,7 +27,7 @@ Packager:
     tasks: 
         - package
     settings:
-        name:$app_name-$marketing_version.zip
+        name: $app_name-$marketing_version.zip
 
 ReleaseNotesGenerator:
     provider: engine.providers.TemplateReleaseNotesGenerator

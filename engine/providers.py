@@ -1,6 +1,8 @@
 import sys 
 import string
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE    
+from file_system import Folder, File
+
 
 class Provider(object):
     
@@ -16,8 +18,9 @@ class Provider(object):
              self.fail('No Task with name:' + task_name)
          task()
 
-     def execute(self, cmdstring, logresult=True):
-         cmd = Popen(cmdstring, stdout=PIPE, shell=True)
+     def execute(self, cmdstring, logresult=True):         
+         print cmdstring
+         cmd = Popen(cmdstring, stdout=PIPE, shell=True)            
          cmdresult = cmd.communicate()[0]
          if cmd.returncode:
              self.fail(cmdresult)
@@ -30,11 +33,11 @@ class Provider(object):
      def fail(self, reason, error=None):
          self.app.logger.error(
              string.Template(
-             '$provider failed bacause of this:$reason').substitute(name=self.type, reason=reason))
+             '$provider failed bacause of this:$reason').substitute(provider=self.type, reason=reason))
          if error:
              raise error
          else:         
-             raise ProviderException(reason)
+             raise Exception(reason)
              
 class Git(Provider): 
     
@@ -42,7 +45,8 @@ class Git(Provider):
     def clean(self):
         self.app.source_root.delete()
 
-    def clone(self):
+    def clone(self):  
+        self.clean()
         self.app.root.cd()
         self.execute(self.eval('git') + " clone " + self.eval('repository'))
 
@@ -59,11 +63,12 @@ class Xcode(Provider):
 
     @property
     def project(self):
-        return self.app.source_root.child(self.eval('project'))
+        return self.eval('project')
 
     def clean(self):
+        self.app.source_root.cd()
         cmd = self.eval('xcode')
-        cmd = cmd + " -project=" + self.project
+        cmd = cmd + " -project " + self.project
         cmd += " clean"
         self.execute(cmd)
         self.app.path = None
@@ -71,14 +76,14 @@ class Xcode(Provider):
     def build(self):
         self.clean()
         cmd = self.eval('xcode')
-        cmd = cmd + " -target = " + self.eval('target')
-        cmd = cmd + " -configuration = " + self.eval('configuration')
-        cmd = cmd + " -project=" + self.project
-        cmd = cmd + " SYMROOT=" + self.app.build_root
+        cmd = cmd + " -target " + self.eval('target')
+        cmd = cmd + " -configuration " + self.eval('configuration')
+        cmd = cmd + " -project " + self.project
+        cmd = cmd + " SYMROOT=" + str(self.app.build_root)
         self.execute(cmd)   
         self.app.path = self.app.build_root.child_folder(
                                 self.eval('configuration')).child(self.app.name + ".app")
-
+     
 
 class InfoPlist(Provider):
     def clean(self):
@@ -86,7 +91,9 @@ class InfoPlist(Provider):
         self.app.marketing_version = None
 
     def get_version(self):
+        print self.app.path
         info = Folder(self.app.path).child('Contents/Info.plist')
+        from Foundation import NSMutableDictionary 
         plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info)
         self.app.build_version = plist['CFBundleVersion']
         self.app.marketing_version = plist.get('CFBundleShortVersionString', self.app.build_version)
@@ -96,7 +103,9 @@ class Zip(Provider):
     def clean(self):
         self.app.archive.delete()
 
-    def package(self):
+    def package(self):           
+        if not self.app.release_root.exists:
+            self.app.release_root.make()
         app = Folder(self.app.path)
         zip_path = app.zzip()
         vzip_name = self.eval('name')
@@ -125,23 +134,20 @@ class Sparkle(Provider):
        self.app.signature = None
 
    def sign(self):
-       sign_cmd = 'openssl dgst -sha1 -binary < "' + self.app.archive_path + '"'
+       sign_cmd = 'openssl dgst -sha1 -binary < "' + self.app.archive.path + '"'
        sign_cmd = sign_cmd + ' | openssl dgst -dss1 -sign "' + self.eval('private_key') + '"'
        sign_cmd = sign_cmd + ' | openssl enc -base64'
        self.app.signature = self.execute(sign_cmd)
 
    def verify(self):
-       verify_cmd = '"' + self.eval('Verifier') + '"'
+       verify_cmd = '"' + self.eval('verifier') + '"'
        verify_cmd = verify_cmd + ' "' + self.app.archive.path + '"'
        verify_cmd = verify_cmd + ' "' + self.app.signature + '"'
        verify_cmd = verify_cmd + ' "' + self.eval('public_key') + '"'
        self.execute(verify_cmd)
 
    def generate_appcast(self):
-       appcast_name = string.Template(self.eval('appcast_name')).substitute(
-                           build_version=self.app.build_version,
-                           marketing_version=self.app.marketing_version,
-                           app_name=self.app.name)
+       appcast_name = self.eval('appcast_name')
        self.app.appcast = File(self.app.release_root.child(appcast_name))
        appcast_item = self.eval('appcast_template')
        self.app.appcast.write(appcast_item)
