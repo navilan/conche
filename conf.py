@@ -88,7 +88,7 @@ class Conf(object):
         self.task_providers = {}
         for provider_type, provider_config in provider_settings.iteritems():            
             app_config = self.app.settings.get(provider_type, {})
-            provider_config.update(app_config)
+            provider_config['settings'].update(app_config)
             provider = self.make(provider_type, provider_config)
             self.providers[provider_type] = provider
             for task in provider_config['tasks']:
