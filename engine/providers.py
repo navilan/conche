@@ -48,6 +48,7 @@ class Git(Provider):
             self.app.source_root.parent.make()
         self.app.source_root.parent.cd()
         self.execute(self.eval('git') + " clone " + self.eval('repository'))
+        self.app.source_root.cd()
         self.execute(self.eval('git') + " submodule init")
         self.execute(self.eval('git') + " submodule update")
         
