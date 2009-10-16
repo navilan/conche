@@ -2,7 +2,7 @@
 
 A primitive build system built for cocoa developers that use git, sparkle and S3. Designed but never tested with extensibility in mind.
 
-Version 0.1 Alpha - In other words: Works for me. I have no idea if it would work for you. There is minimal if any, error handling in place. Has not been tested to work for more than one application.
+Version 0.1 Alpha - In other words: Works for me. I have no idea if it will work for you. There is minimal if any, error handling in place. Has not been tested to work for more than one application.
 
 
 ## Features
