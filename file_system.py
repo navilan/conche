@@ -8,6 +8,7 @@ deletes the directory that is being backed up.
 
 """
 import os
+import platform
 import shutil
 import codecs
 import fnmatch
@@ -15,6 +16,8 @@ from datetime import datetime
 from distutils import dir_util, file_util
 from path_util import PathUtil
 from zipfile import ZipFile, ZIP_DEFLATED
+
+from subprocess import check_call
 
 class FileSystemEntity(object):
     """
@@ -565,7 +568,16 @@ class Folder(FileSystemEntity):
                 return False
         return True        
         
-    def zzip(self):
+    def ditto_zip(self):     
+        folder = self   
+        zip_path = self.parent.child(folder.name + ".zip")
+        check_call(['ditto', '-c', '-k', '--keepParent', '--sequesterRsrc', str(folder), zip_path])
+        return zip_path
+        
+    def zzip(self):   
+        if not platform.mac_ver()[0] == '':
+            return self.ditto_zip()        
+        
         folder = self   
         zip_path = self.parent.child(folder.name + ".zip")
         class Zipper(object):   
@@ -574,10 +586,10 @@ class Folder(FileSystemEntity):
                 super(Zipper, self).__init__()                   
                 self.zip_file = ZipFile(zip_path, 'w', ZIP_DEFLATED)
                             
-            def visit_file(self, file):          
+            def visit_file(self, file):                             
                 path = Folder(folder.name).child_folder(file.parent.get_fragment(folder)).child(file.name)
-                self.zip_file.write(str(file), path)
-
+                self.zip_file.write(str(file), path) 
+                
             def visit_complete(self):        
                 self.zip_file.close()
         self.walk(Zipper())                
@@ -619,7 +631,8 @@ class Folder(FileSystemEntity):
             folder = Folder(root)
             if not __visit_folder__(visitor, folder):
                 dirs[:] = []
-                continue
+                continue         
+
             for a_file in a_files:
                 if not pattern or fnmatch.fnmatch(a_file, pattern):
                     __visit_file__(visitor, File(folder.child(a_file)))

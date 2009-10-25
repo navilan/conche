@@ -3,7 +3,6 @@ import string
 from subprocess import Popen, PIPE
 from file_system import Folder, File
 
-
 class Provider(object):
 
      def __init__(self, ptype, app, conf):
@@ -111,7 +110,10 @@ class Zip(Provider):
         if not self.app.release_root.exists:
             self.app.release_root.make()
         app = Folder(self.app.path)
-        zip_path = app.zzip()
+        try:
+            zip_path = app.zzip()
+        except:
+            self.fail("Cannot create the archive")    
         vzip_name = self.eval('name')
         vzip_path = self.app.release_root.child(vzip_name)
         self.app.archive = File(vzip_path)
