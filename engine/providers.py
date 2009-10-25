@@ -165,7 +165,7 @@ class Sparkle(Provider):
        index = feed.rfind('>', 0, index)    
        if index == -1:
            self.fail('Invalid Appcast file')
-       feed = feed[:index] + appcast_item + feed[index:]
+       feed = feed[:index+1] + '\n' + appcast_item +  '\n' + feed[index+1:]
        self.app.appcast.write(feed)
        self.app.appcast.copy_to(self.app.release_root)   
 
