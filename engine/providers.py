@@ -167,6 +167,7 @@ class Sparkle(Provider):
            self.fail('Invalid Appcast file')
        feed = feed[:index] + appcast_item + feed[index:]
        self.app.appcast.write(feed)
+       self.app.appcast.copy_to(self.app.release_root)   
 
 
 class S3(Provider):
@@ -190,7 +191,9 @@ class S3(Provider):
         key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)
 
         # Publish Appcast     
+        key = bucket.new_key(Folder(self.eval('path')).child(self.app.appcast.name))
+        key.set_contents_from_filename(str(self.app.appcast), cb=dep_cb, num_cb=20)        
         
-        
-        # Publish Release Notes        
-        
+        # Publish Release Notes                                        
+        key = bucket.new_key(Folder(self.eval('path')).child(self.app.release_notes.name))
+        key.set_contents_from_filename(str(self.app.release_notes), cb=dep_cb, num_cb=20)
