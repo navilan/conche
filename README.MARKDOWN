@@ -1,8 +1,10 @@
-# Conche                                   
+# Conche : Version 0.1 Alpha
 
-A primitive build system built for cocoa developers that use git, sparkle and S3. Designed but never tested with extensibility in mind.
+A primitive build system built for cocoa developers that use git, sparkle and S3. 
+                                                                                  
+## Disclaimers
 
-Version 0.1 Alpha - In other words: Works for me. I have no idea if it will work for you. There is minimal if any, error handling in place. Has not been tested to work for more than one application.
+This is something I cooked up really fast to get a [Slammer](http://ringce.com/slammer) out the door. It does work satisfactorily for my set of requirements. However, every-time I try to think of something to add to it, I want to rewrite the core. So at this point in time its just a little more than a one trick pony. I do have big plans for it though. So stay tuned.
 
 
 ## Features
@@ -36,6 +38,9 @@ Some things that really should've been done already:
     1. The $build_root specified in apps.yaml is used as $SYMROOT for xcodebuild.
     2. The application project file must be in $source_root
 3. No support for rolling back.
+4. No Variables.
+5. No Context separation for subtasks.
+6. No support for restarting the build at a failure point.
 
 ## Install
 

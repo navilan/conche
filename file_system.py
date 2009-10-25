@@ -258,6 +258,12 @@ class File(FileSystemEntity):
         fout = codecs.open(self.path, 'w', encoding)
         fout.write(text)
         fout.close()
+        
+    def open_read(self):
+        return codecs.open(self.path, 'r')
+        
+    def open_write(self, encoding='utf-8'):
+        return codecs.open(self.path, 'w', encoding)        
 
     def read_all(self):
         """

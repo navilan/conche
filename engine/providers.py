@@ -153,10 +153,20 @@ class Sparkle(Provider):
        self.execute(verify_cmd)
 
    def generate_appcast(self):
-       appcast_name = self.eval('appcast_name')
-       self.app.appcast = File(self.app.release_root.child(appcast_name))
+       self.app.appcast = File(self.eval('appcast_file'))
        appcast_item = self.eval('appcast_template')
-       self.app.appcast.write(appcast_item)
+       feed = self.app.appcast.read_all()
+       index = feed.find(self.app.substitute('sparkle:version="$build_version"'))
+       if not index == -1:
+           return
+       index = feed.find('</channel>')    
+       if index == -1:
+           self.fail('Invalid Appcast file')  
+       index = feed.rfind('>', index)    
+       if index == -1:
+           self.fail('Invalid Appcast file')
+       feed = feed[:index] + appcast_item + feed[index:]
+       self.app.appcast.write(feed)
 
 
 class S3(Provider):
@@ -171,7 +181,16 @@ class S3(Provider):
         vzip = self.app.archive
         connection = Connection(self.eval('id'), self.eval('key'))
         bucket = connection.get_bucket(self.eval('bucket'))
-        key = bucket.new_key(Folder(self.eval('path')).child(vzip.name))
+
         def dep_cb(done, rem):
             self.app.logger.info(str(done) + "/" + str(rem) + " bytes transferred")
+
+        # Publish Archive    
+        key = bucket.new_key(Folder(self.eval('path')).child(vzip.name))
         key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)
+
+        # Publish Appcast     
+        
+        
+        # Publish Release Notes        
+        
