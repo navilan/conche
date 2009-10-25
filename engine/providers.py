@@ -188,12 +188,12 @@ class S3(Provider):
 
         # Publish Archive    
         key = bucket.new_key(Folder(self.eval('path')).child(vzip.name))
-        key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20)
+        key.set_contents_from_filename(str(vzip), cb=dep_cb, num_cb=20, policy='public-read')
 
         # Publish Appcast     
         key = bucket.new_key(Folder(self.eval('path')).child(self.app.appcast.name))
-        key.set_contents_from_filename(str(self.app.appcast), cb=dep_cb, num_cb=20)        
+        key.set_contents_from_filename(str(self.app.appcast), cb=dep_cb, num_cb=20, policy='public-read')        
         
         # Publish Release Notes                                        
         key = bucket.new_key(Folder(self.eval('path')).child(self.app.release_notes.name))
-        key.set_contents_from_filename(str(self.app.release_notes), cb=dep_cb, num_cb=20)
+        key.set_contents_from_filename(str(self.app.release_notes), cb=dep_cb, num_cb=20, policy='public-read')

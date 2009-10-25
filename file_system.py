@@ -480,6 +480,7 @@ class Folder(FileSystemEntity):
         
         dir_util.copy_tree(str(source),
                         self.child(source.name),
+                        preserve_symlinks=True,
                         update=incremental)
 
     def move_contents_of(self, source, move_empty_folders=True,
