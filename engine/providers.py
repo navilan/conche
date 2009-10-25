@@ -162,7 +162,7 @@ class Sparkle(Provider):
        index = feed.find('</channel>')    
        if index == -1:
            self.fail('Invalid Appcast file')  
-       index = feed.rfind('>', index)    
+       index = feed.rfind('>', 0, index)    
        if index == -1:
            self.fail('Invalid Appcast file')
        feed = feed[:index] + appcast_item + feed[index:]
