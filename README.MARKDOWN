@@ -4,7 +4,7 @@ A primitive build system built for cocoa developers that use git, sparkle and S3
                                                                                   
 ## Disclaimers
 
-This is something I cooked up really fast to get a [Slammer](http://ringce.com/slammer) out the door. It does work satisfactorily for my set of requirements. However, every-time I try to think of something to add to it, I want to rewrite the core. So at this point in time its just a little more than a one trick pony. I do have big plans for it though. So stay tuned.
+This is something I cooked up really fast to get [Slammer](http://ringce.com/slammer) out the door. It does work satisfactorily for my set of requirements. However, every-time I try to think of something to add to it, I want to rewrite the core. So at this point in time its just a little more than a one trick pony. I do have big plans for it though. So stay tuned.
 
 
 ## Features
@@ -88,7 +88,7 @@ Stuff to check and change: Pretty much everything.
 
 Define sequences of tasks here. Please do remember that there are implicit dependencies that have not been taken care of yet. For example, running get_version without running build will fail. 
 
-###. Run
+### 3. Run
 
     cd <Conche Directory> 
     python conche.py  -a <Your App> [-p <root>] [-t tasklist]
